@@ -9,54 +9,18 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/tico88612/devstats-card/models"
-	"github.com/tico88612/devstats-card/pkg/devstats"
-	"github.com/tico88612/devstats-card/svg"
+	"github.com/tico88612/devstats-card/handlers"
+	"github.com/tico88612/devstats-card/service"
 )
 
 func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
 
+	devStatsService := service.NewDevStatsService()
+
 	router := gin.Default()
-	router.GET("/health", func(c *gin.Context) {
-		c.String(http.StatusOK, "OK")
-	})
-
-	router.GET("/score", func(c *gin.Context) {
-		githubID := c.Query("username")
-		if githubID == "" {
-			c.String(http.StatusBadRequest, "Missing username")
-			return
-		}
-
-		a := devstats.NewDevStats("")
-		u := models.User{
-			Username:     githubID,
-			Contribution: -1,
-			PRCount:      -1,
-			Rank:         -1,
-		}
-
-		a.FetchContribute(&u)
-		a.FetchPRCount(&u)
-
-		card := svg.GenerateSVG(models.CardData{
-			Username:      githubID,
-			Score:         u.Contribution,
-			PRs:           u.PRCount,
-			Rank:          u.Rank,
-			Background:    "#0d1117",
-			TitleColor:    "#0086FF",
-			TextColor:     "#555555",
-			Radius:        10,
-			TitleFontSize: 24,
-			TextFontSize:  18,
-		})
-
-		c.Header("Content-Type", "image/svg+xml")
-		c.String(http.StatusOK, card)
-	})
+	handlers.SetupRoutes(router, devStatsService)
 
 	srv := &http.Server{
 		Addr:    ":8080",
