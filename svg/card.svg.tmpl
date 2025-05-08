@@ -69,10 +69,4 @@
     <text x="30" y="8" class="text">Rank</text>
     <text x="200" y="8" class="text">#{{.Rank | formatNumber}}</text>
   </g>
-  <g class="stagger" transform="translate(295, 20)">
-<!--Add a circle with shadow for the avatar background-->
-    <circle cx="65" cy="65" r="55" fill="white" filter="url(#shadow)"/>
-<!--Avatar image-->
-    <image x="10" y="10" width="110" height="110" href="https://github.com/{{.Username}}.png" clip-path="url(#avatarClip)"/>
-  </g>
 </svg>
