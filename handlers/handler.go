@@ -11,8 +11,8 @@ import (
 )
 
 func SetupRoutes(router *gin.Engine, devStatsService *service.DevStatsService) {
+	router.GET("/", ScoreHandler(devStatsService))
 	router.GET("/health", HealthHandler)
-	router.GET("/score", ScoreHandler(devStatsService))
 }
 
 func HealthHandler(c *gin.Context) {
