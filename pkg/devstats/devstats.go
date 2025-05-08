@@ -3,6 +3,7 @@ package devstats
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -44,27 +45,40 @@ func (ds *DevStats) FetchContribute(user *models.User) error {
 
 	jsonBytes, err := json.Marshal(data)
 	if err != nil {
-		log.Fatalf("JSON Marshal error: %v", err)
+		log.Printf("JSON Marshal error: %v", err)
 		return err
 	}
 
 	resp, err := http.Post(ds.DevStatsURL, "application/json", bytes.NewBuffer(jsonBytes))
 	if err != nil {
-		log.Fatalf("HTTP request failed: %v", err)
+		log.Printf("HTTP request failed: %v", err)
 		return err
 	}
 	defer resp.Body.Close()
 
 	bodyBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatalf("read response error: %v", err)
+		log.Printf("read response error: %v", err)
 		return err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		var errorResp struct {
+			Error string `json:"error"`
+		}
+		if jsonErr := json.Unmarshal(bodyBytes, &errorResp); jsonErr == nil {
+			log.Printf("API error: %s", errorResp.Error)
+			return fmt.Errorf("API error: %s", errorResp.Error)
+		} else {
+			log.Printf("Server returned error: %d %s", resp.StatusCode, resp.Status)
+			return fmt.Errorf("server error: %s", resp.Status)
+		}
 	}
 
 	var result DevStatsResponse
 	err = json.Unmarshal(bodyBytes, &result)
 	if err != nil {
-		log.Fatalf("JSON unmarshal error: %v", err)
+		log.Printf("JSON unmarshal error: %v", err)
 		return err
 	}
 
@@ -89,27 +103,40 @@ func (ds *DevStats) FetchPRCount(user *models.User) error {
 
 	jsonBytes, err := json.Marshal(data)
 	if err != nil {
-		log.Fatalf("JSON Marshal error: %v", err)
+		log.Printf("JSON Marshal error: %v", err)
 		return err
 	}
 
 	resp, err := http.Post(ds.DevStatsURL, "application/json", bytes.NewBuffer(jsonBytes))
 	if err != nil {
-		log.Fatalf("HTTP request failed: %v", err)
+		log.Printf("HTTP request failed: %v", err)
 		return err
 	}
 	defer resp.Body.Close()
 
 	bodyBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatalf("read response error: %v", err)
+		log.Printf("read response error: %v", err)
 		return err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		var errorResp struct {
+			Error string `json:"error"`
+		}
+		if jsonErr := json.Unmarshal(bodyBytes, &errorResp); jsonErr == nil {
+			log.Printf("API error: %s", errorResp.Error)
+			return fmt.Errorf("API error: %s", errorResp.Error)
+		} else {
+			log.Printf("Server returned error: %d %s", resp.StatusCode, resp.Status)
+			return fmt.Errorf("server error: %s", resp.Status)
+		}
 	}
 
 	var result DevStatsResponse
 	err = json.Unmarshal(bodyBytes, &result)
 	if err != nil {
-		log.Fatalf("JSON unmarshal error: %v", err)
+		log.Printf("JSON unmarshal error: %v", err)
 		return err
 	}
 

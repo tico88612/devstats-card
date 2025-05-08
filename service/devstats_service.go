@@ -16,7 +16,7 @@ func NewDevStatsService() *DevStatsService {
 	}
 }
 
-func (s *DevStatsService) GetUserStats(username string) *models.User {
+func (s *DevStatsService) GetUserStats(username string) (*models.User, error) {
 	user := &models.User{
 		Username:     username,
 		Contribution: -1,
@@ -24,8 +24,15 @@ func (s *DevStatsService) GetUserStats(username string) *models.User {
 		Rank:         -1,
 	}
 
-	s.client.FetchContribute(user)
-	s.client.FetchPRCount(user)
+	err := s.client.FetchContribute(user)
+	if err != nil {
+		return nil, err
+	}
 
-	return user
+	err = s.client.FetchPRCount(user)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
 }

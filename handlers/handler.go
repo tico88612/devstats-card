@@ -27,7 +27,11 @@ func ScoreHandler(devStatsService *service.DevStatsService) gin.HandlerFunc {
 			return
 		}
 
-		user := devStatsService.GetUserStats(githubID)
+		user, err := devStatsService.GetUserStats(githubID)
+		if err != nil {
+			c.String(http.StatusBadRequest, "Username not found.")
+			return
+		}
 
 		card := svg.GenerateSVG(models.CardData{
 			Username:      githubID,
