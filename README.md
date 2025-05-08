@@ -5,5 +5,5 @@
 Add the following code to your README. When pasting the code into your profile's readme, change the `?username=` value to your GitHub username.
 
 ```
-[![DevStats Card](https://devstats.me/score?username=tico88612)](https://github.com/tico88612/devstats-card)
+[![DevStats Card](https://devstats.me/?username=tico88612)](https://github.com/tico88612/devstats-card)
 ```
