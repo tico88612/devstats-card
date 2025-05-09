@@ -13,4 +13,10 @@ Add the following code to your README. When pasting the code into your profile's
 
 ## Special Thanks
 
-- [CNTUG Infra Labs](https://docs.cloudnative.tw) provides the infrastructure for this service.
+[CNTUG Infra Labs](https://docs.cloudnative.tw) provides the infrastructure for this service.
+
+## Support
+
+If you like this project, give it a ⭐ and share it with friends!
+
+<a href="https://www.buymeacoffee.com/tico88612" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
