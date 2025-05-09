@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/tico88612/devstats-card/models"
 	"github.com/tico88612/devstats-card/service"
@@ -26,6 +27,8 @@ func ScoreHandler(devStatsService *service.DevStatsService) gin.HandlerFunc {
 			c.String(http.StatusBadRequest, "Missing username")
 			return
 		}
+
+		githubID = strings.ToLower(githubID)
 
 		user, err := devStatsService.GetUserStats(githubID)
 		if err != nil {
