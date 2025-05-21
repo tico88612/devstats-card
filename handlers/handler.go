@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/tico88612/devstats-card/models"
 	"github.com/tico88612/devstats-card/service"
@@ -48,6 +49,10 @@ func ScoreHandler(devStatsService *service.DevStatsService) gin.HandlerFunc {
 			TitleFontSize: 24,
 			TextFontSize:  18,
 		})
+		c.Header("Cache-Control", "public, max-age=7200")
+
+		expiresTime := time.Now().Add(2 * time.Hour).Format(time.RFC1123)
+		c.Header("Expires", expiresTime)
 
 		c.Header("Content-Type", "image/svg+xml")
 		c.String(http.StatusOK, card)
