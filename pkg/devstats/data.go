@@ -14,6 +14,11 @@ type DevStatsPayload struct {
 	GitHubID        string `json:"github_id"`
 	BG              string `json:"bg"`
 }
+
+type DevStatsContributionsResponse struct {
+	Contributions int `json:"contributions"`
+}
+
 type DevStatsResponse struct {
 	Project         string   `json:"project"`
 	DBName          string   `json:"db_name"`

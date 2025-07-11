@@ -41,6 +41,7 @@ func ScoreHandler(devStatsService *service.DevStatsService) gin.HandlerFunc {
 			Username:      githubID,
 			Score:         user.Contribution,
 			PRs:           user.PRCount,
+			Issues:        user.IssueCount,
 			Rank:          user.Rank,
 			Background:    "#0d1117",
 			TitleColor:    "#0086FF",
