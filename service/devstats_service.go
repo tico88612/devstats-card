@@ -30,8 +30,5 @@ func (s *DevStatsService) GetUserStats(username string) (*models.User, error) {
 		return nil, err
 	}
 
-	_ = s.client.FetchPRCount(user)
-	_ = s.client.FetchIssueCount(user)
-
 	return user, nil
 }

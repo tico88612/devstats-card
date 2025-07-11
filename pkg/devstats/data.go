@@ -17,6 +17,8 @@ type DevStatsPayload struct {
 
 type DevStatsContributionsResponse struct {
 	Contributions int `json:"contributions"`
+	Issues        int `json:"issues"`
+	PRs           int `json:"prs"`
 }
 
 type DevStatsResponse struct {
