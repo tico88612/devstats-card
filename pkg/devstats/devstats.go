@@ -31,15 +31,9 @@ func NewDevStats(serverURL string) DevStatsInterface {
 
 func (ds *DevStats) FetchContribute(user *models.User) error {
 	data := DevStatsRequest{
-		API: "DevActCnt",
+		API: "GithubIDContributions",
 		Payload: DevStatsPayload{
-			Project:         "all",
-			Range:           "Last decade",
-			Metric:          "Contributions",
-			RepositoryGroup: "All",
-			Country:         "All",
-			GitHubID:        user.Username,
-			BG:              "",
+			GitHubID: user.Username,
 		},
 	}
 
@@ -75,15 +69,14 @@ func (ds *DevStats) FetchContribute(user *models.User) error {
 		}
 	}
 
-	var result DevStatsResponse
+	var result DevStatsContributionsResponse
 	err = json.Unmarshal(bodyBytes, &result)
 	if err != nil {
 		log.Printf("JSON unmarshal error: %v", err)
 		return err
 	}
 
-	user.Contribution = result.Number[0]
-	user.Rank = result.Rank[0]
+	user.Contribution = result.Contributions
 	return nil
 }
 
