@@ -17,10 +17,10 @@ jobs:
     steps:
       - name: Checkout main branch
         uses: actions/checkout@v4.2.2
-      - name: Set up Go 1.24
+      - name: Set up Go 1.26
         uses: actions/setup-go@v5.5.0
         with:
-          go-version: '1.24'
+          go-version: '1.26'
           check-latest: true
       - name: Install dependencies
         run: go mod download

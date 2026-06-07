@@ -1,6 +1,6 @@
 module github.com/tico88612/devstats-card
 
-go 1.23.5
+go 1.26.0
 
 require (
 	github.com/bytedance/sonic v1.13.2 // indirect
