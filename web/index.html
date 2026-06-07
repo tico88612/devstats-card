@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CNCF DevStats Card</title>
+  <meta name="description" content="Generate a CNCF DevStats card for your GitHub profile README." />
+  <style>
+    :root {
+      --bg: #0d1117;
+      --panel: #161b22;
+      --border: #30363d;
+      --text: #c9d1d9;
+      --muted: #8b949e;
+      --accent: #0086ff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 16px;
+    }
+    h1 {
+      font-size: 28px;
+      margin: 0 0 8px;
+      color: var(--accent);
+      text-align: center;
+    }
+    p.lead {
+      margin: 0 0 32px;
+      color: var(--muted);
+      text-align: center;
+    }
+    .card-panel {
+      width: 100%;
+      max-width: 560px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .form-row {
+      display: flex;
+      gap: 8px;
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 10px 12px;
+      font-size: 15px;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      outline: none;
+    }
+    input[type="text"]:focus { border-color: var(--accent); }
+    button {
+      padding: 10px 18px;
+      font-size: 15px;
+      font-weight: 600;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover { filter: brightness(1.1); }
+    .preview {
+      margin-top: 24px;
+      min-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .preview img { max-width: 100%; }
+    .preview .placeholder { color: var(--muted); font-size: 14px; }
+    .snippet {
+      margin-top: 24px;
+      display: none;
+    }
+    .snippet.show { display: block; }
+    .snippet label {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .snippet-row {
+      display: flex;
+      gap: 8px;
+    }
+    .snippet code {
+      flex: 1;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    .copy-btn {
+      background: var(--panel);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .copy-btn:hover { border-color: var(--accent); }
+    footer {
+      margin-top: 40px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <h1>CNCF DevStats Card</h1>
+  <p class="lead">Generate a CNCF DevStats card for your GitHub profile README.</p>
+
+  <div class="card-panel">
+    <form id="form" class="form-row">
+      <input type="text" id="username" placeholder="GitHub username" autocomplete="off" spellcheck="false" />
+      <button type="submit">Preview</button>
+    </form>
+
+    <div class="preview" id="preview">
+      <span class="placeholder">Enter a GitHub username to preview your card.</span>
+    </div>
+
+    <div class="snippet" id="snippet">
+      <label>Markdown (paste into your profile README)</label>
+      <div class="snippet-row">
+        <code id="markdown"></code>
+        <button type="button" class="copy-btn" id="copy">Copy</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="https://github.com/tico88612/devstats-card" target="_blank" rel="noopener">View on GitHub</a>
+  </footer>
+
+  <script>
+    const form = document.getElementById("form");
+    const input = document.getElementById("username");
+    const preview = document.getElementById("preview");
+    const snippet = document.getElementById("snippet");
+    const markdownEl = document.getElementById("markdown");
+    const copyBtn = document.getElementById("copy");
+
+    function render(username) {
+      username = username.trim();
+      if (!username) return;
+
+      const origin = window.location.origin;
+      const cardUrl = origin + "/?username=" + encodeURIComponent(username);
+
+      preview.innerHTML = "";
+      const img = document.createElement("img");
+      img.src = cardUrl;
+      img.alt = "DevStats card for " + username;
+      img.onerror = () => {
+        preview.innerHTML = '<span class="placeholder">Could not load card. Check the username and try again.</span>';
+        snippet.classList.remove("show");
+      };
+      preview.appendChild(img);
+
+      const markdown = "[![DevStats Card](" + cardUrl + ")](https://github.com/tico88612/devstats-card)";
+      markdownEl.textContent = markdown;
+      snippet.classList.add("show");
+
+      // Keep the URL shareable without triggering the SVG response.
+      const url = new URL(window.location);
+      url.searchParams.set("preview", username);
+      window.history.replaceState(null, "", url);
+    }
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      render(input.value);
+    });
+
+    copyBtn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(markdownEl.textContent);
+        copyBtn.textContent = "Copied!";
+        setTimeout(() => (copyBtn.textContent = "Copy"), 1500);
+      } catch (_) {
+        copyBtn.textContent = "Failed";
+        setTimeout(() => (copyBtn.textContent = "Copy"), 1500);
+      }
+    });
+
+    // Restore from a shared ?preview= link.
+    const initial = new URLSearchParams(window.location.search).get("preview");
+    if (initial) {
+      input.value = initial;
+      render(initial);
+    }
+  </script>
+</body>
+</html>

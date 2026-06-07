@@ -8,17 +8,32 @@ import (
 	"github.com/tico88612/devstats-card/models"
 	"github.com/tico88612/devstats-card/service"
 	"github.com/tico88612/devstats-card/svg"
+	"github.com/tico88612/devstats-card/web"
 
 	"github.com/gin-gonic/gin"
 )
 
 func SetupRoutes(router *gin.Engine, devStatsService *service.DevStatsService) {
-	router.GET("/", ScoreHandler(devStatsService))
+	router.GET("/", RootHandler(devStatsService))
 	router.GET("/health", HealthHandler)
 }
 
 func HealthHandler(c *gin.Context) {
 	c.String(http.StatusOK, "OK")
+}
+
+// RootHandler serves the SVG card when a username is provided (used by README
+// embeds), and otherwise serves the preview frontend page.
+func RootHandler(devStatsService *service.DevStatsService) gin.HandlerFunc {
+	scoreHandler := ScoreHandler(devStatsService)
+	return func(c *gin.Context) {
+		if c.Query("username") == "" {
+			c.Header("Cache-Control", "public, max-age=3600")
+			c.Data(http.StatusOK, "text/html; charset=utf-8", web.IndexPage())
+			return
+		}
+		scoreHandler(c)
+	}
 }
 
 func ScoreHandler(devStatsService *service.DevStatsService) gin.HandlerFunc {
