@@ -15,6 +15,35 @@ Add the following code to your README. When pasting the code into your profile's
 
 This service is hosted in [CNTUG Infra Labs](https://docs.cloudnative.tw). You can check the current service status on [this page](https://stats.uptimerobot.com/FiwusMKLrf).
 
+## Themes
+
+Pick a built-in theme with the `theme` parameter:
+
+```
+[![DevStats Card](https://devstats.me/?username=tico88612&theme=dark)](https://github.com/tico88612/devstats-card)
+```
+
+Available themes:
+
+- **Light**: `default`, `solarized-light`, `gruvbox-light`, `latte`, `vue`
+- **Dark**: `dark`, `dracula`, `radical`, `gruvbox`, `tokyonight`
+
+### Custom colors
+
+Override any theme color with a hex value (without `#`):
+
+| Parameter      | Description       |
+| -------------- | ----------------- |
+| `bg_color`     | Card background   |
+| `border_color` | Card border       |
+| `title_color`  | Title text        |
+| `text_color`   | Stats text        |
+| `icon_color`   | Stat icons        |
+
+```
+https://devstats.me/?username=tico88612&theme=dark&title_color=ff79c6
+```
+
 ## Special Thanks
 
 [CNTUG Infra Labs](https://docs.cloudnative.tw) provides the infrastructure for this service.
