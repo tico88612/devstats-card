@@ -71,6 +71,17 @@
       outline: none;
     }
     input[type="text"]:focus { border-color: var(--accent); }
+    select {
+      padding: 10px 12px;
+      font-size: 15px;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      outline: none;
+      cursor: pointer;
+    }
+    select:focus { border-color: var(--accent); }
     button {
       padding: 10px 18px;
       font-size: 15px;
@@ -143,6 +154,22 @@
   <div class="card-panel">
     <form id="form" class="form-row">
       <input type="text" id="username" placeholder="GitHub username" autocomplete="off" spellcheck="false" />
+      <select id="theme" aria-label="Theme">
+        <optgroup label="Light">
+          <option value="default">Default</option>
+          <option value="solarized-light">Solarized Light</option>
+          <option value="gruvbox-light">Gruvbox Light</option>
+          <option value="latte">Catppuccin Latte</option>
+          <option value="vue">Vue</option>
+        </optgroup>
+        <optgroup label="Dark">
+          <option value="dark">Dark</option>
+          <option value="dracula">Dracula</option>
+          <option value="radical">Radical</option>
+          <option value="gruvbox">Gruvbox</option>
+          <option value="tokyonight">Tokyo Night</option>
+        </optgroup>
+      </select>
       <button type="submit">Preview</button>
     </form>
 
@@ -166,6 +193,7 @@
   <script>
     const form = document.getElementById("form");
     const input = document.getElementById("username");
+    const themeSelect = document.getElementById("theme");
     const preview = document.getElementById("preview");
     const snippet = document.getElementById("snippet");
     const markdownEl = document.getElementById("markdown");
@@ -176,7 +204,11 @@
       if (!username) return;
 
       const origin = window.location.origin;
-      const cardUrl = origin + "/?username=" + encodeURIComponent(username);
+      const theme = themeSelect.value;
+      let cardUrl = origin + "/?username=" + encodeURIComponent(username);
+      if (theme !== "default") {
+        cardUrl += "&theme=" + encodeURIComponent(theme);
+      }
 
       preview.innerHTML = "";
       const img = document.createElement("img");
@@ -195,12 +227,21 @@
       // Keep the URL shareable without triggering the SVG response.
       const url = new URL(window.location);
       url.searchParams.set("preview", username);
+      if (theme !== "default") {
+        url.searchParams.set("theme", theme);
+      } else {
+        url.searchParams.delete("theme");
+      }
       window.history.replaceState(null, "", url);
     }
 
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       render(input.value);
+    });
+
+    themeSelect.addEventListener("change", () => {
+      if (input.value.trim()) render(input.value);
     });
 
     copyBtn.addEventListener("click", async () => {
@@ -215,7 +256,12 @@
     });
 
     // Restore from a shared ?preview= link.
-    const initial = new URLSearchParams(window.location.search).get("preview");
+    const params = new URLSearchParams(window.location.search);
+    const initial = params.get("preview");
+    const initialTheme = params.get("theme");
+    if (initialTheme && [...themeSelect.options].some(o => o.value === initialTheme)) {
+      themeSelect.value = initialTheme;
+    }
     if (initial) {
       input.value = initial;
       render(initial);
