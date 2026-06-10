@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"regexp"
 	"strings"
 	"time"
 
@@ -44,6 +45,32 @@ func RootHandler(devStatsService *service.DevStatsService) gin.HandlerFunc {
 	}
 }
 
+var hexColorPattern = regexp.MustCompile(`^[0-9a-fA-F]{3,8}$`)
+
+// resolveTheme builds the card palette from the `theme` query parameter, then
+// applies any per-color overrides (hex without the leading `#`, e.g.
+// `&title_color=ff79c6`). Invalid values are ignored to keep the SVG safe.
+func resolveTheme(c *gin.Context) models.Theme {
+	theme := models.GetTheme(c.Query("theme"))
+
+	overrides := []struct {
+		param string
+		dest  *string
+	}{
+		{"bg_color", &theme.Background},
+		{"border_color", &theme.Border},
+		{"title_color", &theme.TitleColor},
+		{"text_color", &theme.TextColor},
+		{"icon_color", &theme.IconColor},
+	}
+	for _, o := range overrides {
+		if v := c.Query(o.param); hexColorPattern.MatchString(v) {
+			*o.dest = "#" + v
+		}
+	}
+	return theme
+}
+
 func ScoreHandler(devStatsService *service.DevStatsService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		githubID := c.Query("username")
@@ -60,15 +87,18 @@ func ScoreHandler(devStatsService *service.DevStatsService) gin.HandlerFunc {
 			return
 		}
 
+		theme := resolveTheme(c)
 		card := svg.GenerateSVG(models.CardData{
 			Username:      githubID,
 			Score:         user.Contribution,
 			PRs:           user.PRCount,
 			Issues:        user.IssueCount,
 			Rank:          user.Rank,
-			Background:    "#0d1117",
-			TitleColor:    "#0086FF",
-			TextColor:     "#555555",
+			Background:    theme.Background,
+			Border:        theme.Border,
+			TitleColor:    theme.TitleColor,
+			TextColor:     theme.TextColor,
+			IconColor:     theme.IconColor,
 			Radius:        10,
 			TitleFontSize: 24,
 			TextFontSize:  18,

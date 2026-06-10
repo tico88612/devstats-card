@@ -7,8 +7,10 @@ type CardData struct {
 	Issues        int
 	Rank          int
 	Background    string
+	Border        string
 	TitleColor    string
 	TextColor     string
+	IconColor     string
 	Radius        int
 	TitleFontSize int
 	TextFontSize  int
