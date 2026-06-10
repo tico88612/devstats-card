@@ -15,7 +15,15 @@ import (
 
 func SetupRoutes(router *gin.Engine, devStatsService *service.DevStatsService) {
 	router.GET("/", RootHandler(devStatsService))
+	router.HEAD("/", HeadHandler)
 	router.GET("/health", HealthHandler)
+	router.HEAD("/health", HeadHandler)
+}
+
+// HeadHandler responds to HEAD requests with 200 and no body, so external
+// uptime monitors can health-check the service cheaply.
+func HeadHandler(c *gin.Context) {
+	c.Status(http.StatusOK)
 }
 
 func HealthHandler(c *gin.Context) {
