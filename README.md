@@ -11,6 +11,10 @@ Add the following code to your README. When pasting the code into your profile's
 [![DevStats Card](https://devstats.me/?username=tico88612)](https://github.com/tico88612/devstats-card)
 ```
 
+## Status Page
+
+This service is hosted in [CNTUG Infra Labs](https://docs.cloudnative.tw). You can check the current service status on [this page](https://stats.uptimerobot.com/FiwusMKLrf).
+
 ## Special Thanks
 
 [CNTUG Infra Labs](https://docs.cloudnative.tw) provides the infrastructure for this service.
