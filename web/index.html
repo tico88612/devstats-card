@@ -80,6 +80,7 @@
       border-radius: 8px;
       outline: none;
       cursor: pointer;
+      min-width: 0;
     }
     select:focus { border-color: var(--accent); }
     button {
@@ -145,6 +146,17 @@
       text-align: center;
     }
     footer a { color: var(--accent); text-decoration: none; }
+    @media (max-width: 520px) {
+      body { padding: 32px 12px; }
+      h1 { font-size: 24px; }
+      .card-panel { padding: 16px; }
+      .form-row { flex-direction: column; }
+      .form-row input[type="text"],
+      .form-row select,
+      .form-row button {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
